@@ -10,7 +10,7 @@ dotenv.config();
 
 export default async function handler(originReq: NextApiRequest, originRes: NextApiResponse) {
     // originReq.body = convertRequestKey(originReq.body);
-    logger.info("api-proxy", originReq.url, originReq.body);
+    logger.info("api-proxy", originReq.url);
 
     const authHeader = getAuthHeader(originReq);
     originReq.headers = {
@@ -28,7 +28,6 @@ export default async function handler(originReq: NextApiRequest, originRes: Next
                 proxyRes.on("data", (chunk) => {
                     responseData += chunk;
                 });
-
                 proxyRes.on("end", () => {
                     try {
                         const data = JSON.parse(responseData);
