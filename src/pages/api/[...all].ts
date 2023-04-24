@@ -22,6 +22,7 @@ export default async function handler(originReq: NextApiRequest, originRes: Next
         target: process.env.BACKEND_ENDPOINT,
         changeOrigin: true,
         selfHandleResponse: true,
+        timeout: 5000,
         onProxyInit(httpProxy) {
             httpProxy.on("proxyRes", (proxyRes, req, res) => {
                 let responseData = "";

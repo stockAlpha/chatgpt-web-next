@@ -90,8 +90,6 @@ export const getAuthHeader = (req: IncomingMessage) => {
 };
 
 export const fetchServer = async (url: string, req: IncomingMessage, options?: RequestInit) => {
-    // config timeout
-    options = { timeout: 5000 };
     logger.info("fetch-server", url, options);
     try {
         const res = await fetch(new URL(url, process.env.BACKEND_ENDPOINT), {
