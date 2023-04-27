@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 import { TOKEN_MAX_AGE, USER_TOKEN } from "@/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
 import httpProxyMiddleware from "next-http-proxy-middleware";
-import { getAuthHeader, sendResponse } from "@/service/server";
+import { getAuthHeader } from "@/service/server";
 import logger from "@/service/logger";
 
 dotenv.config();
@@ -17,6 +17,10 @@ export default async function handler(originReq: NextApiRequest, originRes: Next
         ...originReq.headers,
         ...authHeader,
     };
+
+    if (process.env.NODE_ENV !== "production") {
+        delete originReq.headers["accept-encoding"];
+    }
 
     return httpProxyMiddleware(originReq, originRes, {
         target: process.env.BACKEND_ENDPOINT,
@@ -57,8 +61,8 @@ export default async function handler(originReq: NextApiRequest, originRes: Next
                         res.setHeader("Content-Type", "application/json");
                         res.end(transformedResponse);
                         logger.info("api-proxy", "response to client:", transformedData);
-                    } catch (err) {
-                        logger.error("api-proxy", "proxy response error:", err);
+                    } catch (err: any) {
+                        logger.error("api-proxy", "proxy response error:", err.message || err);
                         res.end(
                             JSON.stringify({
                                 status: "fail",
