@@ -33,6 +33,24 @@ const Footer: React.FC<Props> = ({ onMessageUpdate, responding, setResponding })
     const currentHistory = useMemo(() => {
         return history.find((item) => item.uuid === uuid);
     }, [history, uuid]);
+    const mentionOptions = useMemo(() => {
+        const options = [
+            {
+                label: "图片模式-Midjourney",
+                value: "image$midjourney",
+            },
+            {
+                label: "图片模式-Dalle2",
+                value: "image$dall-e2",
+            },
+            {
+                label: "图片模式-Stable Diffusion",
+                value: "image$stable-diffusion",
+            },
+        ];
+
+        return options;
+    }, []);
 
     const submit = async (text: string) => {
         let message = text.trim();
@@ -69,6 +87,7 @@ const Footer: React.FC<Props> = ({ onMessageUpdate, responding, setResponding })
             loading: true,
             inversion: false,
             isImage,
+            model,
             error: false,
             conversationOptions: null,
             requestOptions: { prompt: message, options },
@@ -175,14 +194,8 @@ const Footer: React.FC<Props> = ({ onMessageUpdate, responding, setResponding })
                         onChange={onInputChange}
                         onSelect={(e) => setModel(e.value as Model)}
                         onPressEnter={onPressEnter}
-                    >
-                        <Mentions.Option value="image$dall-e2">图片模式-Dalle2</Mentions.Option>
-                        {userInfo.vipUser && (
-                            <Mentions.Option value="image$stable-diffusion">
-                                图片模式-Stable Diffusion
-                            </Mentions.Option>
-                        )}
-                    </Mentions>
+                        options={mentionOptions}
+                    />
                     <Button type="primary" onClick={() => submit(value)}>
                         <SendOutlined />
                     </Button>
